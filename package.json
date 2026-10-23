@@ -3,11 +3,19 @@
   "version": "0.7.0",
   "private": true,
   "description": "KVMoonShot Trial SDK - cross-venue strategy integration starter",
+  "main": "desktop/main.cjs",
   "scripts": {
     "postinstall": "node config/platform-bindings.cjs --install",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "desktop:dev": "electron .",
+    "desktop:pack": "electron-builder --config electron-builder.yml",
+    "desktop:pack:win": "electron-builder --win --config electron-builder.yml",
+    "desktop:pack:mac": "electron-builder --mac --config electron-builder.yml",
+    "desktop:pack:linux": "electron-builder --linux --config electron-builder.yml",
+    "desktop:pack:release": "npm run build && electron-builder --win zip --mac zip --config electron-builder.yml",
+    "build:runtime-sync-release": "node scripts/build-runtime-sync-release.mjs",
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -30,6 +38,8 @@
     "@kvmoonshot/kvmswap-native": "1.4.0"
   },
   "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "@types/node": "^22.10.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

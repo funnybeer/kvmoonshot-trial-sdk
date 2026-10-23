@@ -1,0 +1,23 @@
+KVMoonShot releases
+===================
+
+MINIMAL (runtime sync, recommended)
+-----------------------------------
+File: minimal/KVMoonShot-Runtime-Sync-1.4.0.zip  (~20 KB)
+
+Same bootstrap path as trial SDK npm postinstall. Requires Node 18+ only.
+
+  Windows: extract, double-click Install.cmd
+  macOS/Linux: extract, run ./install.sh
+
+Rebuild: npm run build:runtime-sync-release
+
+No Git clone, no full npm tree, no Electron.
+
+
+OPTIONAL (full desk UI, large ~330 MB)
+--------------------------------------
+Build locally with npm run desktop:pack:win (not stored in git).
+
+Electron + Chromium + Next.js + wallet libraries. Use only when you need
+the visual trading desk, not for runtime sync alone.

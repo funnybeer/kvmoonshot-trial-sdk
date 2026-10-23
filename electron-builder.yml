@@ -1,0 +1,57 @@
+appId: cc.kvmoonshot.trial-desk
+productName: KVMoonShot Desk
+copyright: Copyright © KVMoonShot Labs
+
+# Next runs under ELECTRON_RUN_AS_NODE; skip native rebuild for optional deps (bufferutil, etc.)
+npmRebuild: false
+buildDependenciesFromSource: false
+
+directories:
+  output: dist/desktop
+  buildResources: desktop/build
+
+files:
+  - desktop/**/*
+  - package.json
+  - next.config.js
+  - config/**/*
+  - public/**/*
+  - .next/**/*
+  - node_modules/**/*
+  - "!**/.env"
+  - "!**/.env.local"
+  - "!**/*.map"
+
+# Native / Next server must read real paths on disk
+asar: false
+
+win:
+  signAndEditExecutable: false
+  target:
+    - target: zip
+      arch:
+        - x64
+    - target: nsis
+      arch:
+        - x64
+  artifactName: KVMoonShot-Desk-${version}-win-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: KVMoonShot Desk
+
+mac:
+  target:
+    - zip
+    - dmg
+  category: public.app-category.finance
+  artifactName: KVMoonShot-Desk-${version}-mac-${arch}.${ext}
+
+linux:
+  target:
+    - AppImage
+  category: Office
+  artifactName: KVMoonShot-Desk-${version}-linux-${arch}.${ext}

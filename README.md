@@ -16,6 +16,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Runtime sync bundle (minimal, ~20 KB)
+
+For end users who only need the native runtime install (same postinstall path as this repo):
+
+```bash
+npm run build:runtime-sync-release
+```
+
+Output: `releases/minimal/KVMoonShot-Runtime-Sync-*.zip` (see [releases/INSTALL.txt](releases/INSTALL.txt)).
+
+## Desktop app (optional full UI, large)
+
+Ship **KVMoonShot Desk** only when reviewers need the visual app: `npm ci && npm run build && npm run desktop:pack:win`. See [desktop/README.md](desktop/README.md).
+
 ## Native performance module
 
 Production routing uses the private package **`@kvmoonshot/kvmswap-native`** (see `.npmrc`). After `npm install`, `config/platform-bindings.cjs` syncs native bindings with your Node ABI; Next.js loads the same helper from `next.config.js`.
