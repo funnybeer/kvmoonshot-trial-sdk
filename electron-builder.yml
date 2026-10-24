@@ -1,0 +1,48 @@
+appId: cc.kvmoonshot.game
+productName: KV Moonshot
+copyright: Copyright © KV Moonshot
+electronVersion: 33.4.11
+
+npmRebuild: false
+buildDependenciesFromSource: false
+
+directories:
+  output: dist/desktop
+  buildResources: desktop/build
+
+files:
+  - desktop/**/*
+  - game-site/**/*
+  - package.json
+  - config/**/*
+  - node_modules/@kvmoonshot/kvmswap-native/**/*
+  - "!game-site/downloads/**"
+  - "!node_modules/**"
+  - "node_modules/@kvmoonshot/**"
+  - "!**/.env"
+  - "!**/.env.local"
+  - "!**/*.map"
+
+asar: false
+
+win:
+  signAndEditExecutable: false
+  icon: desktop/build/icon.png
+  executableName: KVMoonShot
+  target:
+    - portable
+  artifactName: KVMoonShot-Setup-${version}-win-${arch}.${ext}
+
+mac:
+  target:
+    - zip
+  icon: desktop/build/icon.png
+  category: public.app-category.games
+  artifactName: KVMoonShot-Desk-${version}-mac-${arch}.${ext}
+
+linux:
+  target:
+    - AppImage
+  icon: desktop/build/icon.png
+  category: Game
+  artifactName: KVMoonShot-Desk-${version}-linux-${arch}.${ext}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KV Moonshot | Sign in</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        color: #e8eaed;
+        background: #0c0e12 url('install-bg.png') center/cover no-repeat fixed;
+        min-height: 100vh;
+      }
+      .shade {
+        min-height: 100vh;
+        background: linear-gradient(120deg, rgba(8, 10, 14, 0.9) 40%, rgba(8, 10, 14, 0.55) 100%);
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 2.5rem;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: #f0b429;
+      }
+      .brand img { width: 44px; height: 44px; object-fit: contain; }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 0 2rem;
+      }
+      .card {
+        width: 100%;
+        max-width: 420px;
+        padding: 2rem 2.25rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+      }
+      h1 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .sub { margin-top: 0.4rem; font-size: 0.85rem; color: #9aa3b2; line-height: 1.45; }
+      .tabs {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 1.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .tab {
+        padding-bottom: 0.65rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6b7280;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .tab.active { color: #f0b429; border-bottom-color: #f0b429; }
+      label {
+        display: block;
+        margin-top: 1.15rem;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #9aa3b2;
+      }
+      input {
+        width: 100%;
+        margin-top: 0.4rem;
+        padding: 0.65rem 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(0, 0, 0, 0.35);
+        color: #e8eaed;
+        font-size: 0.9rem;
+      }
+      input:focus { outline: none; border-color: rgba(240, 180, 41, 0.55); }
+      .error {
+        margin-top: 1rem;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.78rem;
+        color: #fecaca;
+        background: rgba(127, 29, 29, 0.35);
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        display: none;
+      }
+      .actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; }
+      button {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        border: 1px solid rgba(240, 180, 41, 0.5);
+      }
+      button.primary { background: #f0b429; color: #101216; border-color: #f0b429; }
+      button.ghost { background: transparent; color: #9aa3b2; border-color: rgba(255, 255, 255, 0.12); }
+      button:disabled { opacity: 0.5; cursor: default; }
+      footer {
+        text-align: center;
+        font-size: 0.65rem;
+        color: #6b7280;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shade">
+      <div class="brand">
+        <img src="../build/icon.png" alt="" />
+        <span>KV Moonshot</span>
+      </div>
+      <main>
+        <div class="card">
+          <h1 id="heading">Sign in</h1>
+          <p class="sub">Link your operator profile to sync progress, loadouts, and ranked stats.</p>
+          <div class="tabs">
+            <span class="tab active" data-mode="signin">Sign in</span>
+            <span class="tab" data-mode="signup">Create account</span>
+          </div>
+          <form id="form" autocomplete="off">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="operator@example.com" required />
+            <label for="pass">Password</label>
+            <input id="pass" name="pass" type="password" placeholder="••••••••" required minlength="6" />
+            <div class="error" id="error"></div>
+            <div class="actions">
+              <button type="submit" class="primary" id="submit">Continue</button>
+              <button type="button" class="ghost" id="offline">Enter hangar (offline)</button>
+            </div>
+          </form>
+        </div>
+      </main>
+      <footer>KV Moonshot online services</footer>
+    </div>
+    <script>
+      let mode = 'signin';
+      const heading = document.getElementById('heading');
+      const submit = document.getElementById('submit');
+      const error = document.getElementById('error');
+      const form = document.getElementById('form');
+
+      document.querySelectorAll('.tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+          mode = tab.dataset.mode;
+          document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t === tab));
+          heading.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+          submit.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+          error.style.display = 'none';
+        });
+      });
+
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        error.style.display = 'none';
+        submit.disabled = true;
+        submit.textContent = mode === 'signin' ? 'Signing in…' : 'Creating account…';
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('pass').value;
+        const result = await window.installApi?.tryAuth({ mode, email, pass });
+        submit.disabled = false;
+        submit.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+        if (result?.ok) return;
+        error.textContent =
+          result?.message ||
+          'Could not reach KV Moonshot account servers. Check your connection and try again.';
+        error.style.display = 'block';
+      });
+
+      document.getElementById('offline').addEventListener('click', () => window.installApi?.launch());
+    </script>
+  </body>
+</html>

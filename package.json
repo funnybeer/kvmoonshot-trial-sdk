@@ -1,0 +1,44 @@
+{
+  "name": "@kvmoonshot/game-client",
+  "version": "0.7.2",
+  "private": true,
+  "description": "KV Moonshot lunar operations game client",
+  "author": "KV Moonshot",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "postinstall": "node config/platform-bindings.cjs --install",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "desktop:dev": "electron .",
+    "desktop:pack:win": "electron-builder --win portable --config electron-builder.yml"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.5",
+    "@kvmoonshot/kvmswap-native": "1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.18",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "packageManager": "npm@10.9.8"
+}

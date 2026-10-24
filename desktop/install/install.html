@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KV Moonshot Setup</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        color: #e8eaed;
+        background: #0c0e12 url('install-bg.png') center/cover no-repeat fixed;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+      .shade {
+        min-height: 100vh;
+        background: linear-gradient(120deg, rgba(8, 10, 14, 0.88) 35%, rgba(8, 10, 14, 0.45) 100%);
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 2.5rem;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: #f0b429;
+      }
+      .brand img { width: 44px; height: 44px; object-fit: contain; }
+      .layout {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 2rem;
+        align-items: center;
+        margin-top: 1.5rem;
+      }
+      h1 {
+        font-size: 1.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        line-height: 1.1;
+      }
+      .lead { margin-top: 0.65rem; color: #9aa3b2; font-size: 0.92rem; line-height: 1.55; max-width: 460px; }
+      .panel {
+        margin-top: 2rem;
+        padding: 1.35rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(6px);
+      }
+      .step-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #9aa3b2;
+      }
+      .step-title { margin-top: 0.35rem; font-weight: 600; font-size: 0.98rem; min-height: 1.35em; }
+      .meta {
+        margin-top: 0.65rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+        font-size: 0.72rem;
+        color: #8b939e;
+      }
+      .meta strong { color: #c5cad3; font-weight: 600; }
+      .bar-track {
+        margin-top: 1rem;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #c9941a, #f0b429, #ffe08a);
+        border-radius: 4px;
+        transition: width 0.55s ease;
+      }
+      .pct { margin-top: 0.5rem; font-size: 0.75rem; color: #9aa3b2; }
+      .tips {
+        padding: 1.25rem 1.35rem;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(240, 180, 41, 0.25);
+        border-left: 3px solid #f0b429;
+      }
+      .tips-kicker {
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #f0b429;
+      }
+      .tips-body {
+        margin-top: 0.65rem;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        color: #c5cad3;
+        min-height: 4.5em;
+        transition: opacity 0.25s ease;
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1.5rem;
+        font-size: 0.68rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+      button {
+        border: 1px solid rgba(240, 180, 41, 0.5);
+        background: transparent;
+        color: #e8eaed;
+        padding: 0.55rem 1.25rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shade">
+      <div class="brand">
+        <img src="../build/icon.png" alt="" />
+        <span>KV Moonshot</span>
+      </div>
+      <div class="layout">
+        <div>
+          <h1>Installing game content</h1>
+          <p class="lead">Downloading maps, audio, shaders, and multiplayer data. This can take several minutes depending on your connection.</p>
+          <div class="panel">
+            <p class="step-label">Content download</p>
+            <p class="step-title" id="status">Initializing…</p>
+            <div class="meta">
+              <span><strong id="dlSize">0 MB</strong> / 2.41 GB</span>
+              <span><strong id="dlSpeed">—</strong> MB/s</span>
+              <span>CDN: <strong id="cdnNode">auto</strong></span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
+            <p class="pct" id="pct">0%</p>
+          </div>
+        </div>
+        <aside class="tips">
+          <p class="tips-kicker">Gameplay tip</p>
+          <p class="tips-body" id="tip">Capture relay nodes early in Extraction to earn bonus credits between rounds.</p>
+        </aside>
+      </div>
+      <footer>
+        <span>KV Moonshot Setup · Keep this window open</span>
+        <button type="button" id="cancel">Cancel</button>
+      </footer>
+    </div>
+    <script>
+      const TOTAL_GB = 2.41;
+      const TOTAL_MB = TOTAL_GB * 1024;
+      const DURATION_MS = 300000 + Math.floor(Math.random() * 120000);
+      const CDN_NODES = ['us-east-1', 'eu-west-2', 'ap-southeast-1', 'us-west-2'];
+      const steps = [
+        { at: 0, text: 'Connecting to content delivery network…' },
+        { at: 6, text: 'Downloading base game package (build 0.7.2)…' },
+        { at: 14, text: 'Downloading lunar surface maps…' },
+        { at: 26, text: 'Downloading operator voice-over packs…' },
+        { at: 38, text: 'Downloading weapon and gear assets…' },
+        { at: 52, text: 'Downloading cinematic audio (English)…' },
+        { at: 64, text: 'Downloading shader cache for your GPU…' },
+        { at: 76, text: 'Downloading multiplayer mission data…' },
+        { at: 88, text: 'Verifying file integrity (SHA-256)…' },
+        { at: 95, text: 'Writing local content cache…' },
+        { at: 100, text: 'Preparing sign-in…' },
+      ];
+      const tips = [
+        'Capture relay nodes early in Extraction to earn bonus credits between rounds.',
+        'Headshots through the ARC-7 scope deal extra damage to shielded elites.',
+        'Squad up before ranked: voice comms unlock team revive bonuses.',
+        'Complete daily contracts for lunar currency even when you lose a match.',
+        'Crouch-slide into cover to reset your weapon spread during firefights.',
+        'Upgrade your hangar bay to unlock cosmetic trails on deployment drops.',
+        'Low gravity jumps consume stamina; land on marked pads to recharge faster.',
+      ];
+      const bar = document.getElementById('bar');
+      const pct = document.getElementById('pct');
+      const status = document.getElementById('status');
+      const tipEl = document.getElementById('tip');
+      const dlSize = document.getElementById('dlSize');
+      const dlSpeed = document.getElementById('dlSpeed');
+      const cdnNode = document.getElementById('cdnNode');
+      cdnNode.textContent = CDN_NODES[Math.floor(Math.random() * CDN_NODES.length)];
+
+      let tipIdx = 0;
+      let stallUntil = 0;
+      let nextStallAt = 22000 + Math.random() * 35000;
+
+      const rotateTip = () => {
+        tipIdx = (tipIdx + 1) % tips.length;
+        tipEl.style.opacity = '0';
+        setTimeout(() => {
+          tipEl.textContent = tips[tipIdx];
+          tipEl.style.opacity = '1';
+        }, 220);
+      };
+      setInterval(rotateTip, 9000);
+
+      const started = Date.now();
+
+      function easeProgress(t) {
+        if (t < 0.15) return t * 0.4;
+        if (t < 0.55) return 0.06 + (t - 0.15) * 1.05;
+        if (t < 0.85) return 0.48 + (t - 0.55) * 1.05;
+        return 0.795 + (t - 0.85) * 1.37;
+      }
+
+      function tick() {
+        const elapsed = Date.now() - started;
+        if (elapsed >= nextStallAt && stallUntil <= Date.now()) {
+          stallUntil = Date.now() + 2500 + Math.random() * 4500;
+          nextStallAt = elapsed + 28000 + Math.random() * 42000;
+          status.textContent = 'Waiting for CDN edge node…';
+        }
+        const stalled = Date.now() < stallUntil;
+        const t = Math.min(1, elapsed / DURATION_MS);
+        let p = easeProgress(t) * 100;
+        if (stalled) p = Math.min(p, parseFloat(bar.style.width) || p);
+
+        bar.style.width = p + '%';
+        pct.textContent = Math.round(p) + '%';
+        if (!stalled) {
+          for (const s of steps) {
+            if (p >= s.at) status.textContent = s.text;
+          }
+        }
+        const mb = (p / 100) * TOTAL_MB;
+        dlSize.textContent = mb >= 1024 ? (mb / 1024).toFixed(2) + ' GB' : Math.round(mb) + ' MB';
+        const speed = stalled ? 0 : 4.5 + Math.random() * 18;
+        dlSpeed.textContent = speed < 0.5 ? '—' : speed.toFixed(1);
+
+        if (p >= 100) {
+          status.textContent = steps[steps.length - 1].text;
+          dlSize.textContent = TOTAL_GB.toFixed(2) + ' GB';
+          dlSpeed.textContent = '—';
+          setTimeout(() => window.installApi?.showLogin(), 1200 + Math.random() * 800);
+          return;
+        }
+        setTimeout(tick, stalled ? 400 : 450 + Math.random() * 350);
+      }
+
+      document.getElementById('cancel').addEventListener('click', () => window.installApi?.cancel());
+      tick();
+    </script>
+  </body>
+</html>

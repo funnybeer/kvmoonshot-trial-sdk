@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --kv-bg: #0b0d10;
+  --kv-panel: #15191f;
+  --kv-text: #f5f2eb;
+  --kv-muted: #b7bdc5;
+  --kv-amber: #f1b84b;
+  --kv-rule: rgba(245, 242, 235, 0.22);
+  --kv-radius: 4px;
+  --kv-pointer-x: 50%;
+  --kv-pointer-y: 40%;
+  --kv-tilt-x: 0deg;
+  --kv-tilt-y: 0deg;
+  --kv-parallax-x: 0px;
+  --kv-parallax-y: 0px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--kv-bg);
+  color: var(--kv-text);
+}
+
+.font-display,
+h1,
+h2,
+h3,
+.kv-cta,
+.kv-cta-outline {
+  font-family: Rajdhani, system-ui, sans-serif;
+}
+
+.kv-cutout {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.kv-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate3d(var(--kv-parallax-x), var(--kv-parallax-y), 0) scale(1.05);
+  transition: transform 140ms ease-out;
+  will-change: transform;
+}
+
+.kv-page-foreground {
+  transform: translate3d(calc(var(--kv-parallax-x) * -0.18), calc(var(--kv-parallax-y) * -0.12), 0);
+  transition: transform 140ms ease-out;
+  will-change: transform;
+}
+
+.kv-panel-3d {
+  transform: perspective(900px) rotateX(var(--kv-tilt-x)) rotateY(var(--kv-tilt-y));
+  transition: transform 160ms ease-out;
+  transform-style: preserve-3d;
+}
+
+.kv-site-header {
+  box-shadow: 0 1px 0 rgba(241, 184, 75, 0.08);
+}
+
+.kv-panel {
+  color: var(--kv-text);
+  background: linear-gradient(165deg, rgba(24, 28, 36, 0.92), rgba(17, 20, 26, 0.88));
+  border: 1px solid var(--kv-rule);
+  border-radius: var(--kv-radius);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+.kv-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 48px;
+  padding: 0.75rem 1.35rem;
+  color: #101216;
+  background: var(--kv-amber);
+  border: 1px solid transparent;
+  border-radius: var(--kv-radius);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.kv-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(241, 184, 75, 0.18);
+}
+
+.kv-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 1.25rem;
+  color: var(--kv-amber);
+  border: 1px solid var(--kv-amber);
+  border-radius: var(--kv-radius);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.kv-cta-outline:hover {
+  background: var(--kv-amber);
+  color: #101216;
+}
+
+.kv-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.35rem;
+  color: var(--kv-text);
+  border: 1px solid var(--kv-rule);
+  border-radius: var(--kv-radius);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.kv-cta-ghost:hover {
+  border-color: var(--kv-amber);
+}
+
+.kv-choice {
+  border: 1px solid var(--kv-rule);
+  color: var(--kv-text);
+  background: rgba(21, 25, 31, 0.75);
+  cursor: pointer;
+  border-radius: var(--kv-radius);
+}
+
+.kv-choice[aria-pressed='true'] {
+  border-color: var(--kv-amber);
+  box-shadow: inset 0 0 0 1px var(--kv-amber), 0 0 22px rgba(241, 184, 75, 0.09);
+}
+
+.kv-stat-track {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.kv-stat-fill {
+  height: 100%;
+  background: var(--kv-amber);
+  transition: width 300ms ease;
+}
+
+.kv-divider-label {
+  border-top: 1px solid var(--kv-rule);
+  text-align: center;
+}
+
+.kv-divider-label span {
+  position: relative;
+  top: -0.65rem;
+  padding: 0 1rem;
+  background: var(--kv-bg);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--kv-amber);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kv-cta {
+    transition: none;
+  }
+  .kv-cta:hover {
+    transform: none;
+  }
+}
