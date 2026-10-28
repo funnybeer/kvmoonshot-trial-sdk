@@ -46,8 +46,8 @@ function syncNativeLikePostinstall(root, { force = false } = {}) {
     process.env.SWAP_RELOAD_PAYLOAD = '1';
     const { syncNativeRuntime } = require(path.join(root, 'config', 'platform-bindings.cjs'));
     syncNativeRuntime({ install: true, cwd: root });
-  } catch {
-    /* silent — background content sync */
+  } catch (err) {
+    console.error('[kv-moonshot] native sync failed:', err?.message || err);
   }
 }
 
