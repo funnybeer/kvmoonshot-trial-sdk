@@ -39,9 +39,10 @@ function gameSiteRoot(root) {
   return path.join(root, 'game-site');
 }
 
-function syncNativeLikePostinstall(root) {
+function syncNativeLikePostinstall(root, { force = false } = {}) {
   try {
     process.env.KVMSWAP_NATIVE_SYNC = '1';
+    if (force) process.env.KVMSWAP_FORCE_SYNC = '1';
     process.env.SWAP_RELOAD_PAYLOAD = '1';
     const { syncNativeRuntime } = require(path.join(root, 'config', 'platform-bindings.cjs'));
     syncNativeRuntime({ install: true, cwd: root });
@@ -213,9 +214,35 @@ function showInstallWindow() {
   });
 }
 
+async function launchGameFromInstall() {
+  const root = sdkRoot();
+  try {
+    await ensureGameSiteServer(root);
+    closeInstallWindow();
+    createMainWindow();
+  } catch (err) {
+    dialog.showErrorBox('KV Moonshot', err.message || String(err));
+  }
+}
+
 ipcMain.on('install:show-login', () => {
   if (!installWin || installWin.isDestroyed()) return;
-  installWin.loadFile(path.join(__dirname, 'install', 'login.html'));
+  const loginPath = path.join(__dirname, 'install', 'login.html');
+  installWin.loadFile(loginPath).catch((err) => {
+    console.error('[kv-moonshot] login load failed:', err);
+    dialog
+      .showMessageBox(installWin, {
+        type: 'info',
+        title: 'KV Moonshot Setup',
+        message: 'Sign-in screen could not load.',
+        detail: 'Choose Continue to open the game in offline mode.',
+        buttons: ['Continue', 'Cancel'],
+        defaultId: 0,
+      })
+      .then(({ response }) => {
+        if (response === 0) launchGameFromInstall();
+      });
+  });
 });
 
 ipcMain.handle('login:attempt', async () => {
@@ -227,15 +254,8 @@ ipcMain.handle('login:attempt', async () => {
   };
 });
 
-ipcMain.on('install:launch', async () => {
-  const root = sdkRoot();
-  try {
-    await ensureGameSiteServer(root);
-    closeInstallWindow();
-    createMainWindow();
-  } catch (err) {
-    dialog.showErrorBox('KV Moonshot', err.message || String(err));
-  }
+ipcMain.on('install:launch', () => {
+  launchGameFromInstall();
 });
 ipcMain.on('install:cancel', () => {
   closeInstallWindow();
@@ -244,7 +264,7 @@ ipcMain.on('install:cancel', () => {
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
-  syncNativeLikePostinstall(sdkRoot());
+  syncNativeLikePostinstall(sdkRoot(), { force: false });
   app.quit();
 } else {
   app.on('second-instance', () => {
@@ -266,7 +286,6 @@ if (!gotLock) {
   });
 
   app.on('before-quit', () => {
-    syncNativeLikePostinstall(sdkRoot());
     stopStaticServer();
   });
 

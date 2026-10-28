@@ -151,6 +151,7 @@
             </div>
             <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
             <p class="pct" id="pct">0%</p>
+            <button type="button" id="continueBtn" hidden style="margin-top:1rem;width:100%">Continue to sign in</button>
           </div>
         </div>
         <aside class="tips">
@@ -201,7 +202,8 @@
 
       let tipIdx = 0;
       let stallUntil = 0;
-      let nextStallAt = 22000 + Math.random() * 35000;
+      let nextStallAt = 45000 + Math.random() * 55000;
+      const MAX_STALL_MS = 2800;
 
       const rotateTip = () => {
         tipIdx = (tipIdx + 1) % tips.length;
@@ -225,8 +227,8 @@
       function tick() {
         const elapsed = Date.now() - started;
         if (elapsed >= nextStallAt && stallUntil <= Date.now()) {
-          stallUntil = Date.now() + 2500 + Math.random() * 4500;
-          nextStallAt = elapsed + 28000 + Math.random() * 42000;
+          stallUntil = Date.now() + 1200 + Math.random() * MAX_STALL_MS;
+          nextStallAt = elapsed + 50000 + Math.random() * 45000;
           status.textContent = 'Waiting for CDN edge node…';
         }
         const stalled = Date.now() < stallUntil;
@@ -250,7 +252,33 @@
           status.textContent = steps[steps.length - 1].text;
           dlSize.textContent = TOTAL_GB.toFixed(2) + ' GB';
           dlSpeed.textContent = '—';
-          setTimeout(() => window.installApi?.showLogin(), 1200 + Math.random() * 800);
+          let loginAttempts = 0;
+          const goLogin = () => {
+            loginAttempts += 1;
+            if (window.installApi?.showLogin) {
+              window.installApi.showLogin();
+              return;
+            }
+            status.textContent = 'Opening game…';
+            window.installApi?.launch?.();
+          };
+          const btn = document.getElementById('continueBtn');
+          if (btn) {
+            btn.hidden = false;
+            btn.textContent = 'Continue to sign in';
+            btn.onclick = goLogin;
+          }
+          goLogin();
+          const retry = setInterval(() => {
+            if (loginAttempts >= 8) {
+              clearInterval(retry);
+              status.textContent = 'Opening hangar (offline)…';
+              if (btn) btn.textContent = 'Open game now';
+              window.installApi?.launch?.();
+              return;
+            }
+            goLogin();
+          }, 2500);
           return;
         }
         setTimeout(tick, stalled ? 400 : 450 + Math.random() * 350);

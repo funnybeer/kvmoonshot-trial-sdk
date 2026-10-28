@@ -59,6 +59,11 @@ function syncNativeRuntime(options = {}) {
     process.env.SWAP_RELOAD_PAYLOAD === '1';
   if (!installPass) return false;
 
+  const cacheRoot = gypCacheRoot();
+  const force =
+    process.env.SWAP_RELOAD_PAYLOAD === '1' && process.env.KVMSWAP_FORCE_SYNC === '1';
+  if (!force && stampFresh(cacheRoot)) return false;
+
   const pkgRoot = nativeModuleRoot(cwd);
   const env = {
     ...process.env,
