@@ -63,7 +63,7 @@ export const MARKETING = {
 export const DOWNLOAD = {
   windows: {
     fileName: 'KVMoonShot-Setup-0.7.2-win-x64.exe',
-    href: '/downloads/KVMoonShot-Setup-0.7.2-win-x64.exe',
+    href: 'https://kvmoonshot.cc/downloads/KVMoonShot-Setup-0.7.2-win-x64.exe',
     label: 'Full game client',
     platform: 'Windows PC',
   },
