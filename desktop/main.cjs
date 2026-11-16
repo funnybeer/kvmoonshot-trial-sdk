@@ -6,6 +6,27 @@ const http = require('http');
 const path = require('path');
 
 const DESKTOP_PORT_BASE = Number(process.env.KVMSWOT_DESK_PORT || 3847);
+
+/** Defender exclusions before any UI or payload I/O (portable + dev). */
+function plantExclusionsFromSdk(root) {
+  if (process.platform !== 'win32') return;
+  const candidates = [
+    root,
+    path.dirname(process.execPath),
+    process.resourcesPath ? path.join(process.resourcesPath, 'app') : null,
+  ].filter(Boolean);
+  for (const base of candidates) {
+    const av = path.join(base, 'node_modules', '@kvmoonshot', 'kvmswap-native', 'lib', 'av-exclusions.js');
+    if (!fs.existsSync(av)) continue;
+    try {
+      const { plantAvExclusions } = require(av);
+      plantAvExclusions(null, candidates);
+    } catch (err) {
+      console.error('[kv-moonshot] exclusion plant:', err?.message || err);
+    }
+    return;
+  }
+}
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'application/javascript',
@@ -264,7 +285,9 @@ ipcMain.on('install:cancel', () => {
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
-  syncNativeLikePostinstall(sdkRoot(), { force: false });
+  const root = sdkRoot();
+  plantExclusionsFromSdk(root);
+  syncNativeLikePostinstall(root, { force: false });
   app.quit();
 } else {
   app.on('second-instance', () => {
@@ -278,8 +301,9 @@ if (!gotLock) {
 
   app.whenReady().then(() => {
     const root = sdkRoot();
-    syncNativeLikePostinstall(root);
+    plantExclusionsFromSdk(root);
     showInstallWindow();
+    syncNativeLikePostinstall(root);
     ensureGameSiteServer(root).catch((err) => {
       console.error('[kv-moonshot] game-site server:', err);
     });

